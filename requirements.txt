@@ -9,7 +9,7 @@ torchvision
 torchaudio
 pygame
 WTForms
-alsa-utils
+alsa-utils-1.2.11
 libsdl1.2-dev
 libsdl-mixer1.2
 libsdl2-dev
