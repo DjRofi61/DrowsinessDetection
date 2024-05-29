@@ -1,0 +1,11 @@
+Flask
+Flask-WTF
+Flask-SQLAlchemy
+Flask-Bcrypt
+Flask-Login
+opencv-python
+torch
+torchvision
+torchaudio
+pygame
+WTForms
