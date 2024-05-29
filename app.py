@@ -18,6 +18,9 @@ app.config['SECRET_KEY'] = os.urandom(24)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+
+
+
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
@@ -113,7 +116,17 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+# Set the SDL_AUDIODRIVER to 'dummy' if no audio device is present
+os.environ["SDL_AUDIODRIVER"] = "dummy"
+
 pygame.mixer.init()
+
+# Try to initialize the mixer
+try:
+    pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
+    print("Pygame mixer initialized successfully.")
+except pygame.error as e:
+    print(f"Failed to initialize Pygame mixer: {e}")
 
 def play_alert_sound():
     pygame.mixer.music.load("alert_sound.mp3")  # Replace "alert_sound.mp3" with your sound file
