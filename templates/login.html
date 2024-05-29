@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+</head>
+<body>
+<div class="flex min-h-screen items-center justify-center bg-gray-100">
+  <div class="bg-white rounded-lg shadow-md px-10 py-8 w-1/4">
+      <div class="flex justify-center flex-col items-center">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" class="h-12 w-auto object-contain">
+          <img src="{{ url_for('static', filename='images/napnix.png') }}" class="h-12 w-auto object-contain">
+      </div>
+
+    <h2 class="text-center text-xl mt-10 mb-5">Welcome again!</h2>
+   <form method="POST">
+        {{ form.csrf_token }}
+       <div class="mb-4">
+        <label for="email" class="block mb-2 text-sm font-medium text-gray-700">Email</label>
+        <input id="email" name="email" type="email" class="block w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">
+       </div>
+
+
+       <div class="mb-4">
+        <label for="email" class="block mb-2 text-sm font-medium text-gray-700">Password</label>
+        <input id="password" name="password" type="password" class="block w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">
+       </div>
+
+
+        <p>
+            {{ form.remember() }}
+            {{ form.remember.label }}
+        </p>
+<button type="submit" class="bg-blue-500 flex justify-center items-center hover:bg-blue-700 text-white w-full rounded-full mt-4 px-6 py-2 text-lg font-semibold transition duration-300">Submit</button>
+
+    </form>
+  </div>
+  </div>
+</body>
+</html>
+
+
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <form method="POST">
+        {{ form.csrf_token }}
+        <p>
+            {{ form.email.label }}<br>
+            {{ form.email(size=32) }}
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32) }}
+        </p>
+        <p>
+            {{ form.remember() }}
+            {{ form.remember.label }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+</body>
+</html>-->
