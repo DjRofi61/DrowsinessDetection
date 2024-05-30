@@ -3,7 +3,7 @@ import cv2
 import torch
 import torch.nn as nn
 from torchvision import models, transforms
-import pygame
+ #import pygame
 from flask import Flask, render_template, url_for, flash, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -118,19 +118,19 @@ def logout():
 
 
 
-pygame.mixer.init()
+#pygame.mixer.init()
 
-def play_alert_sound():
-    pygame.mixer.music.load("alert_sound.mp3")  # Replace "alert_sound.mp3" with your sound file
-    pygame.mixer.music.play()
+#def play_alert_sound():
+ #   pygame.mixer.music.load("alert_sound.mp3")  # Replace "alert_sound.mp3" with your sound file
+  #  pygame.mixer.music.play()
 
 transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Resize((160, 160)),
 ])
 
-def stop_alert():
-    pygame.mixer.music.stop()  # Assuming you're using pygame.mixer.music for playing the alert sound
+#def stop_alert():
+ #   pygame.mixer.music.stop()  # Assuming you're using pygame.mixer.music for playing the alert sound
 
 class CustomModel(nn.Module):
     def __init__(self):
@@ -194,8 +194,8 @@ def predict_drowsiness(frame):
             consecutive_drowsy_frames += 1
 
             if consecutive_drowsy_frames >= 10 and not alert_triggered:
-                play_alert_sound()
-                alert_triggered = True
+                #play_alert_sound()
+                #alert_triggered = True
                 consecutive_drowsy_frames = 0
 
 
@@ -205,7 +205,7 @@ def predict_drowsiness(frame):
 
             if alert_triggered:
                 # Stop the alert if it was triggered
-                stop_alert()
+                #stop_alert()
                 alert_triggered = False  # Reset alert_triggered flag
 
         # Draw rectangle around the face
