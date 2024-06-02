@@ -12,8 +12,7 @@ from flask_login import UserMixin, login_user, current_user, logout_user, login_
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from mysql.connector import Error
-import mysql.connector
+
 import os
 import psycopg2
 
