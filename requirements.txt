@@ -8,4 +8,4 @@ torch
 torchvision
 torchaudio
 WTForms
-
+psycopg2
