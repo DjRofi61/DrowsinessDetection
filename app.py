@@ -1,13 +1,15 @@
 import bcrypt
 from flask import Flask, render_template, Response, request
+from PIL import Image
 import cv2
 import torch
 import torch.nn as nn
 from torchvision import models, transforms
- #import pygame
+import pygame
 from flask import Flask, render_template, url_for, flash, redirect
-
+from torchvision.models import mobilenet_v2
 from flask_bcrypt import Bcrypt
+from PIL import Image
 from flask_login import UserMixin, login_user, current_user, logout_user, login_required, LoginManager
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
@@ -20,144 +22,63 @@ import psycopg2
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 # Initialize LoginManager
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'
-app.config['SECRET_KEY'] = os.urandom(24)
-mydb = psycopg2.connect(database="db_5ti8",
-                        user="db_5ti8_user",
-                        password="W6yEMZsdusTqswR358q2Td6vd9b72BnG",
-                        host="dpg-cpdnv37sc6pc7394u6r0-a.oregon-postgres.render.com", port="5432")
-
-# Create cursor object
-
-mycursor = mydb.cursor()
-
-class User(UserMixin):
-    def __init__(self, id, username, email, password):
-        self.id = id
-        self.username = username
-        self.email = email
-        self.password = password
-
-    @staticmethod
-    def get(user_id):
-        query = "SELECT * FROM users WHERE id = %s"
-        mycursor.execute(query, (user_id,))
-        user = mycursor.fetchone()
-        if user:
-            return User(user[0], user[1], user[2], user[3])
-        return None
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
 
 
 
+pygame.mixer.init()
 
-
-
-
-class RegistrationForm(FlaskForm):
-    username = StringField('username', validators=[DataRequired(), Length(min=2, max=20)])
-    email = StringField('email', validators=[DataRequired(), Email()])
-    password = StringField('password', validators=[DataRequired()])
-    confirm_password = StringField('confirm_password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Sign Up')
-
-    def validate_username(self, username):
-        # Query to check if the username exists
-        query = "SELECT username FROM users WHERE username = %s"
-        mycursor.execute(query, (username.data,))
-        user = mycursor.fetchone()
-        if user:
-            raise ValidationError('That username is taken. Please choose a different one.')
-
-    def validate_email(self, email):
-        # Query to check if the email exists
-        query = "SELECT email FROM users WHERE email = %s"
-        mycursor.execute(query, (email.data,))
-        user = mycursor.fetchone()
-        if user:
-            raise ValidationError('That email is taken. Please choose a different one.')
-
-class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember = BooleanField('Remember Me')
-    submit = SubmitField('Login')
-
-@app.route("/signup", methods=['GET', 'POST'])
-def signup():
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        query = "INSERT INTO users (username, email, password) VALUES (%s, %s, %s)"
-        mycursor.execute(query, (form.username.data, form.email.data, hashed_password))
-        mydb.commit()
-        flash('Your account has been created! You are now able to log in', 'success')
-        return redirect(url_for('login'))
-    return render_template('signup.html', title='Register', form=form)
-
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        query = "SELECT * FROM users WHERE email = %s"
-        mycursor.execute(query, (form.email.data,))
-        user = mycursor.fetchone()
-        print(user)
-        print(user[0])
-        if user and user[2] == form.password.data :
-            print('You are logged in')
-            return redirect(url_for('index'))
-        else:
-            print('Login Unsuccessful. Please check email and password')
-    return render_template('login.html', title='Login', form=form)
-
-@app.route("/logout")
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
-
-
-
-#pygame.mixer.init()
-
-#def play_alert_sound():
- #   pygame.mixer.music.load("alert_sound.mp3")  # Replace "alert_sound.mp3" with your sound file
-  #  pygame.mixer.music.play()
+def play_alert_sound():
+    pygame.mixer.music.load("alert_sound.mp3")  # Replace "alert_sound.mp3" with your sound file
+    pygame.mixer.music.play()
+bs = 128
+crop_size = 224
 
 transform = transforms.Compose([
+    transforms.RandomRotation(10),
+    transforms.RandomResizedCrop(crop_size, scale=(0.8, 1.0)),
+    transforms.RandomHorizontalFlip(),
     transforms.ToTensor(),
-    transforms.Resize((160, 160)),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Normalize for RGB images
 ])
 
-#def stop_alert():
- #   pygame.mixer.music.stop()  # Assuming you're using pygame.mixer.music for playing the alert sound
+def stop_alert():
+   pygame.mixer.music.stop()  # Assuming you're using pygame.mixer.music for playing the alert sound
 
-class CustomModel(nn.Module):
-    def __init__(self):
-        super(CustomModel, self).__init__()
-        self.base_model = models.mobilenet_v2(pretrained=True)
-        self.base_model.classifier = nn.Sequential(
-            nn.Dropout(0.3),
-            nn.Linear(1280, 8),
-            nn.ReLU(inplace=True),
-            nn.Linear(8, 2),
-            nn.Sigmoid()
+
+class CustomMobileNetv2(nn.Module):
+    def __init__(self, output_size):
+        super().__init__()
+        self.mnet = mobilenet_v2(pretrained=True)
+        self.mnet.features[0][0] = nn.Conv2d(3, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        self.freeze()
+
+        self.mnet.classifier = nn.Sequential(
+            nn.Linear(1280, output_size),
+            nn.Dropout(0.1),
+            nn.LogSoftmax(1)
         )
 
     def forward(self, x):
-        return self.base_model(x)
+        return self.mnet(x)
+
+    def freeze(self):
+        for param in self.mnet.parameters():
+            param.requires_grad = False
+
+    def unfreeze(self):
+        for param in self.mnet.parameters():
+            param.requires_grad = True
 
 
 # Load pre-trained model
-model = CustomModel()
-path = 'b.pt'
-model.load_state_dict(torch.load(path))
+model = CustomMobileNetv2(2)
+path = 'modelmobilenet (2).pt'
+checkpoint = torch.load(path, map_location=torch.device('cpu'))
+
+# Load the state dictionary
+model_state_dict = checkpoint['model_state_dict']
+# Load state dictionary into the model
+model.load_state_dict(model_state_dict)
 model.eval()
 
 # Initialize webcam
@@ -174,20 +95,21 @@ def predict_drowsiness(frame):
     global consecutive_drowsy_frames, alert_triggered
     delay_frames = 15  # Set a delay of 30 frames (adjust as needed)
     delay_counter = 0
-    # Convert frame to grayscale for face detection
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 
 
     # Detect faces in the frame
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    faces = face_cascade.detectMultiScale(frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
     for (x, y, w, h) in faces:
         # Crop the face
         face_img = frame[y:y + h, x:x + w]
 
+        # Convert the face image from NumPy array to PIL image
+        face_pil = Image.fromarray(cv2.cvtColor(face_img, cv2.COLOR_BGR2RGB))
+
         # Pre-process the face for model input
-        face_tensor = transform(face_img).unsqueeze(0)  # Add batch dimension
+        face_tensor = transform(face_pil).unsqueeze(0)  # Add batch dimension
 
         # Make prediction
         with torch.no_grad():
@@ -200,10 +122,9 @@ def predict_drowsiness(frame):
             consecutive_drowsy_frames += 1
 
             if consecutive_drowsy_frames >= 10 and not alert_triggered:
-                #play_alert_sound()
-                #alert_triggered = True
+                # play_alert_sound()
+                # alert_triggered = True
                 consecutive_drowsy_frames = 0
-
 
         else:
             prediction_text = "Not Drowsy"
@@ -211,7 +132,7 @@ def predict_drowsiness(frame):
 
             if alert_triggered:
                 # Stop the alert if it was triggered
-                #stop_alert()
+                # stop_alert()
                 alert_triggered = False  # Reset alert_triggered flag
 
         # Draw rectangle around the face
@@ -283,8 +204,8 @@ def start_detection():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(debug=True, host='0.0.0.0', port=port)
+
+    app.run(debug=True)
 
 
 
