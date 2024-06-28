@@ -17,7 +17,7 @@ import torch.nn.functional as F  # Add this import
 import torch
 import torch.nn as nn
 from torchvision import models, transforms
-import pygame
+#import pygame
 from flask import Flask, render_template, url_for, flash, redirect
 from torchvision.models import mobilenet_v2
 from flask_bcrypt import Bcrypt
@@ -132,14 +132,14 @@ def logout():
     return redirect(url_for('index'))
 
 
-pygame.mixer.init()
+#pygame.mixer.init()
 
-def play_alert_sound():
+"""def play_alert_sound():
     pygame.mixer.music.load("alert_sound.mp3")  # Replace "alert_sound.mp3" with your sound file
     pygame.mixer.music.play()
 
 def stop_alert():
-    pygame.mixer.music.stop()  # Assuming you're using pygame.mixer.music for playing the alert sound
+    pygame.mixer.music.stop()  # Assuming you're using pygame.mixer.music for playing the alert sound"""
 
 # Define the model
 class CustomModel(nn.Module):
@@ -243,11 +243,11 @@ def predict_drowsiness(image_path):
 
             if prediction_text in ['closeEyes', 'yawning']:
                 if not alert_triggered:
-                    play_alert_sound()
+                    #play_alert_sound()
                     alert_triggered = True
             else:
                 if alert_triggered:
-                    stop_alert()
+                    #stop_alert()
                     alert_triggered = False
 
             # Draw rectangle around the face
