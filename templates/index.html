@@ -27,7 +27,7 @@
 
 </head>
 <body>
-    <!-- Navbar -->
+
     <nav class="bg-white text-black container mx-auto flex justify-around items-center h-16 w-screen rounded-b-lg">
          <div class="flex items-center h-full space-x-2 mx-8">
             <img src="{{ url_for('static', filename='images/logo.png') }}" class="h-8 w-auto object-contain">
@@ -39,19 +39,22 @@
             <a href="#" class="px-4 hover:text-gray-300 transition duration-300 font-medium  text-xl">Contact</a>
 
         </div>
-
+       <div>
+            <a href="{{ url_for('login') }}"> <button class="bg-transparent border-2 border-blue-600 text-white px-4 rounded-full text-lg font-semibold bg-blue-600 hover:bg-blue-600 hover:text-white transition duration-300">LogIn</button></a>
+           <a href="{{ url_for('signup') }}"> <button class="bg-transparent border-2 border-blue-600 text-blue-600 px-4 rounded-full text-lg font-semibold hover:bg-blue-600 hover:text-white transition duration-300">SignUp</button></a>
+        </div>
 
     </nav>
 
 
-       <!-- Hero Section -->
+
     <div class="relative w-full h-screen">
         <img src="{{ url_for('static', filename='images/firstPage.jpg') }}" class="w-full h-full object-cover z-0">
         <div class="absolute inset-0 bg-blue-400 bg-opacity-60 flex flex-col items-center justify-center text-center z-20 text-white p-10 md:p-20 w-screen h-screen">
             <h1 class="text-4xl md:text-6xl font-bold mb-4 text-white">Alerting Vigilance ,Saving Lives</h1>
             <p class="text-lg md:text-2xl mb-8 text-white">Using advanced artificial intelligence, we help prevent accidents by detecting driver drowsiness in real-time and ensure the safety of all passengers on the road by continuously monitoring driver behavior.</p>
             <div class="flex space-x-4">
-                <button id="startButton" class="bg-blue-600 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-blue-200 transition duration-300">Start Monitoring</button>
+                <a href="{{ url_for('predict') }}"> <button id="startButton" class="bg-blue-600 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-blue-200 transition duration-300">Start Monitoring</button></a>
             </div>
         </div>
 
@@ -68,13 +71,8 @@
         </div>
     </div>
 </div>
-    <!--<div>
-        <button class="text-blue-600" >Start Drowsiness Detection</button>
-    </div>
-    <div>
-        <img id="video" width="640" height="480">
-    </div>-->
-    <script>
+
+   <!--<script>
         $(document).ready(function() {
             $('#startButton').click(function() {
                 console.log("Button clicked."); // Check if the button click event is registered
@@ -118,6 +116,9 @@
               $('#videoModal').addClass('hidden'); // Hide the modal
     });
         });
-    </script>
+    </script>-->
 </body>
 </html>
+
+
+
