@@ -166,7 +166,7 @@ model.load_state_dict(torch.load('b.pth'), strict=False)
 model.eval()
 
 # Load YOLO model for face detection
-yolo_model = YOLO("yolov8-face/yolov8n-face.pt")
+yolo_model = YOLO("yolov8n-face.pt")
 
 transform = transforms.Compose([
     transforms.Resize((128, 128)),
@@ -470,3 +470,6 @@ if __name__ == "__main__":
 
 
     app.run(debug=True)"""
+
+
+
