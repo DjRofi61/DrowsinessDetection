@@ -166,7 +166,7 @@ model.load_state_dict(torch.load('b.pth'), strict=False)
 model.eval()
 
 # Load YOLO model for face detection
-yolo_model = YOLO("yolov8n-face.pt")
+#yolo_model = YOLO("yolov8-face/yolov8n-face.pt")
 
 transform = transforms.Compose([
     transforms.Resize((128, 128)),
@@ -194,37 +194,21 @@ def predict_predefined():
 
         return render_template('predict.html', filename=filename)
     return redirect(url_for('index'))
-@app.route('/upload', methods=['POST'])
-def upload():
-    if 'image' not in request.files:
-        return redirect(request.url)
-    file = request.files['image']
-    if file.filename == '':
-        return redirect(request.url)
-    if file:
-        filename = file.filename
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
 
-        # Perform prediction
-        result_filepath = predict_drowsiness(filepath)
-
-        return render_template('predict.html', filename=filename)
+# Load Haar Cascade classifier for face detection
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 def predict_drowsiness(image_path):
     alert_triggered = False
     img = Image.open(image_path).convert('RGB')
     frame = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
 
-    # Detect faces in the frame using YOLO
-    results = yolo_model(frame)
+    # Detect faces using Haar Cascade
+    faces = face_cascade.detectMultiScale(frame, scaleFactor=1.3, minNeighbors=5)
 
-    for result in results:
-        for bbox in result.boxes:
-            x1, y1, x2, y2 = map(int, bbox.xyxy[0])
-
-            # Crop the face
-            face_img = frame[y1:y2, x1:x2]
+    for (x, y, w, h) in faces:
+        # Crop the face
+            face_img = frame[y:y + h, x:x + w]
 
             # Convert the face image from NumPy array to PIL image
             face_pil = Image.fromarray(cv2.cvtColor(face_img, cv2.COLOR_BGR2RGB))
@@ -251,10 +235,10 @@ def predict_drowsiness(image_path):
                     alert_triggered = False
 
             # Draw rectangle around the face
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
             # Write prediction result on the frame
-            cv2.putText(frame, prediction_text, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+            cv2.putText(frame, prediction_text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
 
     # Save the result image
     result_filename = os.path.basename(image_path)
@@ -470,6 +454,3 @@ if __name__ == "__main__":
 
 
     app.run(debug=True)"""
-
-
-

@@ -29,14 +29,7 @@
     </nav>
     <div class="flex flex-col md:flex-row">
         <div class="w-full {% if filename %}md:w-1/2{% else %}w-full{% endif %}">
-            <div class="my-6 flex justify-center mt-16">
 
-                <h2 class="text-2xl font-semibold mb-4">Upload Your Own Image</h2>
-                <form action="/upload" method="post" enctype="multipart/form-data">
-                    <input type="file" name="image" accept="image/*" required class="mb-4">
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-full">Upload and Predict</button>
-                </form>
-            </div>
 
 
             <!-- Predefined Images Section -->
@@ -67,40 +60,40 @@
                     </div>
                     <!-- 3 Predefined Image -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnMaleFemale725.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
+                        <img src="{{ url_for('static', filename='images/yawnFemale9816.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
                         <div class="p-4">
                             <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnMaleFemale725.jpg">
+                                <input type="hidden" name="image_path" value="static/images/yawnFemale9816.jpg">
                                 <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
                             </form>
                         </div>
                     </div>
                     <!-- 4 Predefined Image -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnMaleFemale950.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
+                        <img src="{{ url_for('static', filename='images/yawnMale13932.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
                         <div class="p-4">
                             <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnMaleFemale950.jpg">
+                                <input type="hidden" name="image_path" value="static/images/yawnMale13932.jpg">
                                 <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
                             </form>
                         </div>
                     </div>
                     <!-- 5 Predefined Image -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnMaleFemale1370.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
+                        <img src="{{ url_for('static', filename='images/yawnMale16758.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
                         <div class="p-4">
                             <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnMaleFemale1370.jpg">
+                                <input type="hidden" name="image_path" value="static/images/yawnMale16758.jpg">
                                 <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
                             </form>
                         </div>
                     </div>
                     <!-- 6 Predefined Image -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnMaleFemale3185.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
+                        <img src="{{ url_for('static', filename='images/yawnMale22998.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
                         <div class="p-4">
                             <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnMaleFemale3185.jpg">
+                                <input type="hidden" name="image_path" value="static/images/yawnMale22998.jpg">
                                 <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
                             </form>
                         </div>
@@ -117,20 +110,20 @@
                     </div>
                     <!-- 8 Predefined Image -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnMaleFemale4440.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
+                        <img src="{{ url_for('static', filename='images/yawnMale25944.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
                         <div class="p-4">
                             <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnMaleFemale4440.jpg">
+                                <input type="hidden" name="image_path" value="static/images/yawnMale25944.jpg">
                                 <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
                             </form>
                         </div>
                     </div>
                     <!-- 9 Predefined Image -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnMaleFemale7260.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
+                        <img src="{{ url_for('static', filename='images/yawnMale33732.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
                         <div class="p-4">
                             <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnMaleFemale7260.jpg">
+                                <input type="hidden" name="image_path" value="static/images/yawnMale33732.jpg">
                                 <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
                             </form>
                         </div>
