@@ -26,7 +26,7 @@ from flask_login import UserMixin, login_user, current_user, logout_user, login_
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from ultralytics import YOLO  # Add this import
+#from ultralytics import YOLO  # Add this import
 import os
 import psycopg2
 
