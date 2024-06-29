@@ -5,7 +5,7 @@ import cv2
 import torch
 import torch.nn as nn
 from torchvision import models, transforms
-import pygame
+
 from flask_bcrypt import Bcrypt
 from ultralytics import YOLO
 import os
