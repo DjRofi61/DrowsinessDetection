@@ -9,4 +9,5 @@ torchvision
 torchaudio
 WTForms
 psycopg2
+ultralytics
 gunicorn==19.7.1
