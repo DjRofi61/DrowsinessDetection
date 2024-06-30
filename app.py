@@ -1,14 +1,3 @@
-import bcrypt
-from flask import Flask, render_template, Response, request, redirect, url_for
-from PIL import Image
-import cv2
-import torch
-import torch.nn as nn
-from torchvision import models, transforms
-
-from flask_bcrypt import Bcrypt
-from ultralytics import YOLO
-import os
 import numpy as np  # Add this import
 from flask import Flask, render_template, Response, request
 from PIL import Image
@@ -22,115 +11,6 @@ from flask import Flask, render_template, url_for, flash, redirect
 from torchvision.models import mobilenet_v2
 from flask_bcrypt import Bcrypt
 from PIL import Image
-from flask_login import UserMixin, login_user, current_user, logout_user, login_required, LoginManager
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-#from ultralytics import YOLO  # Add this import
-import os
-import psycopg2
-
-
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'static/uploads/'
-app.config['RESULT_FOLDER'] = 'static/results/'
-bcrypt = Bcrypt(app)
-
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'
-app.config['SECRET_KEY'] = os.urandom(24)
-mydb = psycopg2.connect(database="driverdrowsinessdetection",
-                        user="driverdrowsinessdetection_user",
-                        password="UAbXYKVabEm2uZjC0KR6P54YsUX1z0qU",
-                        host="dpg-cpvj2quehbks73duqkcg-a.oregon-postgres.render.com", port="5432")
-
-# Create cursor object
-
-mycursor = mydb.cursor()
-
-class User(UserMixin):
-    def __init__(self, id, username, email, password):
-        self.id = id
-        self.username = username
-        self.email = email
-        self.password = password
-
-    @staticmethod
-    def get(user_id):
-        query = "SELECT * FROM users WHERE id = %s"
-        mycursor.execute(query, (user_id,))
-        user = mycursor.fetchone()
-        if user:
-            return User(user[0], user[1], user[2], user[3])
-        return None
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
-class RegistrationForm(FlaskForm):
-    username = StringField('username', validators=[DataRequired(), Length(min=2, max=20)])
-    email = StringField('email', validators=[DataRequired(), Email()])
-    password = StringField('password', validators=[DataRequired()])
-    confirm_password = StringField('confirm_password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Sign Up')
-
-    def validate_username(self, username):
-        # Query to check if the username exists
-        query = "SELECT username FROM users WHERE username = %s"
-        mycursor.execute(query, (username.data,))
-        user = mycursor.fetchone()
-        if user:
-            raise ValidationError('That username is taken. Please choose a different one.')
-
-    def validate_email(self, email):
-        # Query to check if the email exists
-        query = "SELECT email FROM users WHERE email = %s"
-        mycursor.execute(query, (email.data,))
-        user = mycursor.fetchone()
-        if user:
-            raise ValidationError('That email is taken. Please choose a different one.')
-
-class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember = BooleanField('Remember Me')
-    submit = SubmitField('Login')
-
-@app.route("/signup", methods=['GET', 'POST'])
-def signup():
-    form = RegistrationForm()
-    if form.validate_on_submit():
-
-        query = "INSERT INTO users (username, email, password) VALUES (%s, %s, %s)"
-        mycursor.execute(query, (form.username.data, form.email.data, form.password.data))
-        mydb.commit()
-        flash('Your account has been created! You are now able to log in', 'success')
-        return redirect(url_for('login'))
-    return render_template('signup.html', title='Register', form=form)
-
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for(''))
-    form = LoginForm()
-    if form.validate_on_submit():
-        query = "SELECT * FROM users WHERE email = %s"
-        mycursor.execute(query, (form.email.data,))
-        user = mycursor.fetchone()
-        print(user)
-        #print(user[0])
-        if user and user[2] == form.password.data :
-            print('You are logged in')
-            return render_template('index.html ' , )
-        else:
-            print('Login Unsuccessful. Please check email and password')
-    return render_template('login.html', title='Login', form=form)
-
-@app.route("/logout")
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
-
 
 #pygame.mixer.init()
 
@@ -272,7 +152,7 @@ from flask_login import UserMixin, login_user, current_user, logout_user, login_
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from ultralytics import YOLO  # Add this import
+
 import os
 import psycopg2
 
