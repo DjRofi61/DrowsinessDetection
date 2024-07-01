@@ -12,6 +12,7 @@ from torchvision.models import mobilenet_v2
 from flask_bcrypt import Bcrypt
 from PIL import Image
 
+app = Flask(__name__)
 #pygame.mixer.init()
 
 """def play_alert_sound():
