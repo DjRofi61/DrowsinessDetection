@@ -183,7 +183,7 @@ if __name__ == "__main__":
     if not os.path.exists(app.config['RESULT_FOLDER']):
         os.makedirs(app.config['RESULT_FOLDER'])
 
-    app.run(debug=True)
+    app.run()
 """
 import bcrypt
 from flask import Flask, render_template, Response, request
