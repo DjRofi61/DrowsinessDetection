@@ -22,6 +22,7 @@ app.config['RESULT_FOLDER'] = 'static/results'
 
 
 
+app = Flask(__name__)
 #pygame.mixer.init()
 """
 def play_alert_sound():
