@@ -11,10 +11,20 @@ from flask import Flask, render_template, url_for, flash, redirect
 from torchvision.models import mobilenet_v2
 from flask_bcrypt import Bcrypt
 from PIL import Image
+import os
+app = Flask(__name__)
+bcrypt = Bcrypt(app)
+# Initialize LoginManager
+
+# Configuration for file uploads and results
+app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['RESULT_FOLDER'] = 'static/results'
+
+
 
 #pygame.mixer.init()
-
-"""def play_alert_sound():
+"""
+def play_alert_sound():
     pygame.mixer.music.load("alert_sound.mp3")  # Replace "alert_sound.mp3" with your sound file
     pygame.mixer.music.play()
 
@@ -59,10 +69,33 @@ def index():
     return render_template('index.html')
 @app.route('/predict')
 def predict():
-    return render_template('predict.html')
+    predefined_images = [
+        'images/yawnMaleFemale420.jpg',
+        'images/yawnMaleFemale600.jpg',
+        'images/yawnFemale9816.jpg',
+        'images/yawnMale13932.jpg',
+        'images/yawnMale16758.jpg',
+        'images/yawnMale22998.jpg',
+        'images/yawnMaleFemale3730.jpg',
+        'images/yawnMale25944.jpg',
+        'images/yawnMale33732.jpg'
+    ]
+    return render_template('predict.html', predefined_images=predefined_images)
+@app.route('/get_result_image', methods=['POST'])
+def get_result_image():
+    image_path = request.json.get('image_path')
+    if image_path:
+        result_filename = os.path.basename(image_path)
+        result_filepath = os.path.join(app.config['RESULT_FOLDER'], result_filename)
+
+        if os.path.exists(result_filepath):
+            return {'result_filename': result_filename}
+        else:
+            return {'error': 'Result image not found'}, 404
+    return {'error': 'Invalid request'}, 400
 
 
-@app.route('/predict_predefined', methods=['POST'])
+""""@app.route('/predict_predefined', methods=['POST'])
 def predict_predefined():
     image_path = request.form.get('image_path')
     if image_path:
@@ -73,10 +106,27 @@ def predict_predefined():
         filename = os.path.basename(image_path)
 
         return render_template('predict.html', filename=filename)
-    return redirect(url_for('index'))
+    return redirect(url_for('index'))"""
 
 # Load Haar Cascade classifier for face detection
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+@app.route('/predict_predefined', methods=['POST'])
+def predict_predefined():
+    image_path = request.form.get('image_path')
+    if image_path:
+        # Assuming the image_path is something like 'static/images/image.jpg'
+        result_filename = os.path.basename(image_path)  # Extract filename from path
+        result_filepath = os.path.join(app.config['RESULT_FOLDER'], result_filename)  # Path to the result image
+
+        # Check if result image exists
+        if os.path.exists(result_filepath):
+            return render_template('predict.html', filename=result_filename)
+        else:
+            flash('Result image not found!', 'error')
+            return redirect(url_for('index'))
+    return redirect(url_for('index'))
+
 
 def predict_drowsiness(image_path):
     alert_triggered = False
@@ -134,9 +184,9 @@ if __name__ == "__main__":
         os.makedirs(app.config['RESULT_FOLDER'])
 
     app.run(debug=True)
-
+"""
 import bcrypt
-"""from flask import Flask, render_template, Response, request
+from flask import Flask, render_template, Response, request
 from PIL import Image
 import cv2
 import torch.nn.functional as F  # Add this import
@@ -152,7 +202,7 @@ from flask_login import UserMixin, login_user, current_user, logout_user, login_
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-
+from ultralytics import YOLO
 import os
 import psycopg2
 
@@ -216,7 +266,7 @@ cap = None
 # Load Haar Cascade classifier for face detection
 #face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 # Load YOLO model for face detection
-yolo_model = YOLO("yolov8-face/yolov8n-face.pt")
+yolo_model = YOLO("yolov8n-face.pt")
 
 is_detection_started = False
 

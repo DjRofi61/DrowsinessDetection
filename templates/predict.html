@@ -4,153 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
     <title>Drowsiness Detection</title>
-
 </head>
 <body class="bg-gray-100 p-6">
- <nav class="bg-white text-black container mx-auto flex justify-around items-center h-16 w-screen rounded-b-lg">
-         <div class="flex items-center h-full space-x-2 mx-8">
+    <nav class="bg-white text-black container mx-auto flex justify-around items-center h-16 w-screen rounded-b-lg">
+        <div class="flex items-center h-full space-x-2 mx-8">
             <img src="{{ url_for('static', filename='images/logo.png') }}" class="h-8 w-auto object-contain">
             <img src="{{ url_for('static', filename='images/napnix.png') }}" class="h-8 w-auto object-contain">
         </div>
         <div class="space-x-8 mx-8">
             <a href="{{ url_for('index') }}" class="px-4 hover:text-gray-300 transition duration-300 font-medium text-xl">Home</a>
-            <a href="#" class="px-4 hover:text-gray-300 transition duration-300 font-medium  text-xl">About</a>
-            <a href="#" class="px-4 hover:text-gray-300 transition duration-300 font-medium  text-xl">Contact</a>
-
+            <a href="#" class="px-4 hover:text-gray-300 transition duration-300 font-medium text-xl">About</a>
+            <a href="#" class="px-4 hover:text-gray-300 transition duration-300 font-medium text-xl">Contact</a>
         </div>
-       <div>
-            <a href="{{ url_for('login') }}"> <button class="bg-transparent border-2 border-blue-600 text-white px-4 rounded-full text-lg font-semibold bg-blue-600 hover:bg-blue-600 hover:text-white transition duration-300">LogIn</button></a>
-           <a href="{{ url_for('signup') }}"> <button class="bg-transparent border-2 border-blue-600 text-blue-600 px-4 rounded-full text-lg font-semibold hover:bg-blue-600 hover:text-white transition duration-300">SignUp</button></a>
+        <div>
+            <a href="#"><button class="bg-transparent border-2 border-blue-600 text-white px-4 rounded-full text-lg font-semibold bg-blue-600 hover:bg-blue-600 hover:text-white transition duration-300">LogIn</button></a>
+            <a href="#"><button class="bg-transparent border-2 border-blue-600 text-blue-600 px-4 rounded-full text-lg font-semibold hover:bg-blue-600 hover:text-white transition duration-300">SignUp</button></a>
         </div>
-
-
     </nav>
     <div class="flex flex-col md:flex-row">
         <div class="w-full {% if filename %}md:w-1/2{% else %}w-full{% endif %}">
-
-
-
             <!-- Predefined Images Section -->
             <div class="mt-16">
                 <div class="flex justify-center">
-                 <h2 class="text-2xl font-semibold mb-4">Select a Predefined Image</h2>
+                    <h2 class="text-2xl font-semibold mb-4">Select a Predefined Image</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- First Predefined Image -->
+                    {% for image in predefined_images %}
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnMaleFemale420.jpg') }}" alt="Yawn" class="w-full h-48 object-cover">
+                        <img src="{{ url_for('static', filename=image) }}" alt="Predefined Image" class="w-full h-48 object-cover">
                         <div class="p-4">
-                            <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnMaleFemale420.jpg">
-                                <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
-                            </form>
+                            <button type="button" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full use-image-button" data-image-path="{{ url_for('static', filename=image) }}">Use this Image</button>
                         </div>
                     </div>
-                    <!-- Second Predefined Image -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnMaleFemale600.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnMaleFemale600.jpg">
-                                <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- 3 Predefined Image -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnFemale9816.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnFemale9816.jpg">
-                                <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- 4 Predefined Image -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnMale13932.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnMale13932.jpg">
-                                <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- 5 Predefined Image -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnMale16758.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnMale16758.jpg">
-                                <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- 6 Predefined Image -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnMale22998.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnMale22998.jpg">
-                                <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- 7 Predefined Image -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnMaleFemale3730.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnMaleFemale3730.jpg">
-                                <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- 8 Predefined Image -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnMale25944.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnMale25944.jpg">
-                                <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- 9 Predefined Image -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="{{ url_for('static', filename='images/yawnMale33732.jpg') }}" alt="Another Image" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <form action="/predict_predefined" method="post">
-                                <input type="hidden" name="image_path" value="static/images/yawnMale33732.jpg">
-                                <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full">Use this Image</button>
-                            </form>
-                        </div>
-                    </div>
-
-
-
-
-
-
-
+                    {% endfor %}
                 </div>
             </div>
-
-            <!-- Upload Image Section -->
-
         </div>
-
         <!-- Prediction Result Section -->
-        {% if filename %}
-        <div class="ml-8 w-2/4  h-screen md:w-1/2 mb-6">
+        <div class="ml-8 w-2/4 h-screen md:w-1/2 mb-6">
             <h2 class="text-2xl font-semibold mb-4">Prediction Result</h2>
-            <!--<img src="{{ url_for('static', filename='uploads/' ~ filename) }}" alt="Uploaded Image" class="mb-4 w-full">-->
-            <img class ="w-3/4  object-cover rounded-lg" src="{{ url_for('static', filename='results/' ~ filename) }}" alt="Prediction Result" class="w-full">
+            <img id="prediction-result" class="w-3/4 object-cover rounded-lg" src="" alt="Prediction Result" class="w-full" style="display: none;">
         </div>
-        {% endif %}
     </div>
-</body>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.use-image-button').forEach(button => {
+                button.addEventListener('click', function () {
+                    const imagePath = this.getAttribute('data-image-path');
+                    fetch('/get_result_image', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ image_path: imagePath })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.result_filename) {
+                            const resultImage = document.getElementById('prediction-result');
+                            resultImage.src = `/static/results/${data.result_filename}`;
+                            resultImage.style.display = 'block';
+                        } else {
+                            alert('Result image not found!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while fetching the result image.');
+                    });
+                });
+            });
+        });
+    </script>
+</body>
 </html>
